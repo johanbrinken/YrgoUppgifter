@@ -1,0 +1,69 @@
+PVector ballpos;
+PVector ballVelocity;
+PVector mousePosition;
+PVector ballTravelVector;
+boolean trackingMouse = false;
+boolean lineCreated = false;
+float ballMaxSpeed = 8f;
+
+void setup()
+{
+  ballVelocity = new PVector(0, 0);
+  ballpos = new PVector(width/2, height/2);
+  size(640, 480);
+  
+}
+
+void draw()
+{
+	background(255, 145, 185);
+	ballpos.add(ballVelocity);
+
+	if(trackingMouse)
+	{
+		line(ballpos.x, ballpos.y, mouseX, mouseY);
+		mousePosition = new PVector(mouseX, mouseY);
+	}
+
+	//prints the ball and calls the constraints functions
+	ellipse(ballpos.x, ballpos.y, 20, 20);
+	BallConstraints();
+}
+
+void CalculateBallSpeed()
+{
+	//Calculate distance between mouse and ball
+	ballTravelVector = new PVector(mousePosition.x - ballpos.x, mousePosition.y - ballpos.y).normalize();
+	float clickDistance = PVector.dist(ballpos, mousePosition);
+	//Line length multiplier
+	clickDistance /= 100;
+	ballVelocity.add(ballTravelVector.mult(clickDistance));
+
+	trackingMouse = false;
+}
+
+void BallConstraints()
+{
+	//Ball "map"/screen constraints
+	if ((ballpos.x > width) || (ballpos.x < 0)) 
+	{
+   		ballVelocity.x = ballVelocity.x *-1;
+  	}
+  	if ((ballpos.y > height) || (ballpos.y < 0))
+  	{
+   		ballVelocity.y = ballVelocity.y *-1;
+  	}
+
+  	ballVelocity.limit(ballMaxSpeed);
+}
+
+void mouseDragged()
+{
+	trackingMouse = true;
+}
+
+void mouseReleased() 
+{
+
+	CalculateBallSpeed();
+}
