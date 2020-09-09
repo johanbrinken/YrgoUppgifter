@@ -1,0 +1,78 @@
+PVector guessingVector;
+PVector firstPoint;
+PVector lastPoint;
+PVector guessedVector;
+boolean trackingMouse;
+boolean lineFinished;
+
+
+void setup() 
+{
+	guessedVector = new PVector(0,0);
+	strokeWeight(2f);
+	stroke(155, 200, 255);
+	lineFinished = false;
+	trackingMouse = false;
+	guessingVector = new PVector(random(5, width), random(5, height));
+
+	size(640, 480);
+	textSize(16);
+}
+
+void draw() 
+{
+	background(35);
+	textAlign(LEFT);
+	text("Replicate this [X:" + guessingVector.x + " Y:" + guessingVector.y+"]", 5, 25);
+	text("\nLength: " + guessingVector.mag(), 5, 25);
+
+	if (trackingMouse && !lineFinished)
+		DrawLine(firstPoint, lastPoint);
+	if (lineFinished)
+	{
+		line(firstPoint.x, firstPoint.y, lastPoint.x, lastPoint.y);
+		guessedVector = new PVector(firstPoint.x, lastPoint.y);
+		textAlign(RIGHT);
+		text("Your guess [X:" + guessedVector.x + " Y:" + guessedVector.y+"]", 640, 25);
+		text("\nYour Length: " + guessedVector.mag(), 640, 25);
+		textAlign(LEFT);
+
+	}
+
+}
+
+void DrawLine(PVector firstPoint, PVector lastPoint)
+{
+	if (!lineFinished && trackingMouse)
+		line(firstPoint.x, firstPoint.y, mouseX, mouseY);
+	if(lineFinished)
+	{
+		line(firstPoint.x, firstPoint.y, lastPoint.x, lastPoint.y);
+	}
+}
+
+void mousePressed()
+{
+	if (!lineFinished)
+	{
+		trackingMouse = true;
+		firstPoint = new PVector(mouseX, mouseY);
+	}
+}
+
+void mouseReleased()
+{
+	if (!lineFinished)
+	{
+		lastPoint = new PVector(mouseX, mouseY);
+		trackingMouse = false;
+		lineFinished = true;
+		print(lineFinished);
+	}
+}
+
+void mouseDragged()
+{
+
+	trackingMouse= true;
+}
